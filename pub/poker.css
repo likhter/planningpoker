@@ -1,0 +1,21 @@
+/* vote area */
+.voteArea .voteCard {
+    display: inline-block;
+    padding: 10px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    height: 20px;
+    background-color: gray;
+    cursor: pointer;
+}
+
+.voteArea .voteCard:hover {
+    background-color: pink;
+}
+
+/* users area */
+.usersArea .userCard {
+    background-color: #F1D1FF;
+}
+

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>planning poker</title>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="//knockoutjs.com/downloads/knockout-3.0.0.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="poker.js"></script>
+        <link rel="stylesheet" type="text/css" href="poker.css"/>
+    </head>
+    <body>
+        <input type="text" placeholder="username" data-bind="value: userName"/>
+        <button data-bind="click: onLoginClick">login</button><br/>
+        <input type="text" placeholder="room name" id="roomName" data-bind="value: roomName"/>
+        <button data-bind="click: onEnterClick">enter</button>
+        <button data-bind="click: onCreateRoomClick">create new room</button>
+
+        <div class="poker">
+            <div class="voteArea" data-bind="foreach: voteCardValues">
+                <div class="voteCard" data-bind="text: $data, click: $parent.onVoteCardClick"></div>
+            </div>
+            <div class="usersArea" data-bind="foreach: users">
+                <div class="userCard">
+                    <div class="username" data-bind="text: name"></div>
+                    <div class="vote_loader" data-bind="visible: $data.vote && !$parent.allVoted()">voted</div>
+                    <div class="vote" data-bind="text: $data.vote ? $data.vote : '', css: {visible: $parent.allVoted}"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
