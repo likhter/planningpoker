@@ -72,7 +72,8 @@ var _vm = function() {
 
         this.socket.on('server_error', $.proxy(function(data) {
             alert('Server returned error: ' + data.msg);
-        }));
+            this.userNameLoaderVisible(false);
+        }, this));
 
         this.socket.on('error', function(data) {
             console.log('socket error:', data);
