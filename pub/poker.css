@@ -12,7 +12,7 @@ body {
     text-align: center;
     margin-left: auto;
     margin-right: auto;
-    width: 600px;
+    width: 685px;
     padding-top: 200px;
 }
 
@@ -84,7 +84,7 @@ body {
 .poker {
     margin-left: auto;
     margin-right: auto;
-    width: 600px;
+    width: 685px;
 }
 
 /* roomInfo */
@@ -100,7 +100,7 @@ body {
 }
 
 .voteArea .voteCard {
-    background-color: #ecf0f1;
+    background: no-repeat no-repeat 3px 5px url(/img/time.png) #ecf0f1;
     font-family: 'Roboto Condensed';
     display: table-cell;
     cursor: pointer;
