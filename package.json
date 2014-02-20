@@ -2,9 +2,14 @@
   "name": "planningpoker",
   "version": "0.0.1",
   "author": "Konstantin Likhter <konstantin@likhter.ru>",
+  "scripts": {
+    "start": "./node_modules/forever/bin/forever start server.js",
+    "stop": "./node_modules/forever/bin/forever stop server.js"
+  },
   "dependencies": {
     "node-static": "~0.7.3",
     "socket.io": "~0.9.16",
-    "lodash": "~2.4.1"
+    "lodash": "~2.4.1",
+    "forever": "~0.10.11"
   }
 }
