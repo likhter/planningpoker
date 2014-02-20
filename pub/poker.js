@@ -140,7 +140,11 @@ var _vm = function() {
 
     // dom elements listeners
     this.onEnterClick = function() {
-        this.roomName(prompt('Enter room name'));
+        var rn = prompt("Enter room name");
+        if (!rn || /^\s*$/.test(rn)) {
+            return;
+        }
+        this.roomName(rn);
         this.login();
         // see this.userId.subsribe to follow up next steps
     }
