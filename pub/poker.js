@@ -25,14 +25,10 @@ var _vm = function() {
     this.userNameLoaderVisible = ko.observable(false);
     this.loginBoxVisible = ko.observable(true);
 
-    this.userId.subscribe($.proxy(function(newVal) {
-        if (newVal) {
-            this.socket.emit(
-                'join', 
-                this.roomName() ? { roomName: this.roomName() } : {}
-            );
-        }
-    }, this));
+    this.onAfterLogin = function() {  };
+    this.userId.subscribe(function() {
+        this.onAfterLogin();
+    }, this);
 
     // convert .vote to observable
     this.prepareUserData = function(users) {
@@ -127,7 +123,11 @@ var _vm = function() {
             return alert('Username must be [a-z0-9-_\.]+'); 
         }
         this.userNameLoaderVisible(true);
-        this.socket.emit('set_name', { name: this.userName() });
+        if (!this.userId()) {
+            this.socket.emit('set_name', { name: this.userName() });
+        } else {
+            this.userId.valueHasMutated();
+        }
     }
 
     this.resetRoom = function() {
@@ -145,12 +145,17 @@ var _vm = function() {
         if (!rn || /^\s*$/.test(rn)) {
             return;
         }
-        this.roomName(rn);
+        this.onAfterLogin = $.proxy(function() {
+            this.socket.emit('join', {roomName: rn});
+        }, this);
         this.login();
         // see this.userId.subsribe to follow up next steps
     }
 
     this.onCreateRoomClick = function() {
+        this.onAfterLogin = $.proxy(function() { 
+            this.socket.emit('join');
+        }, this);
         this.login();
         // see this.userId.subsribe to follow up next steps
     }
