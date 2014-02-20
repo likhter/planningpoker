@@ -14,7 +14,7 @@ var _vm = function() {
         }
         var ret = true;
         $.each(this.users(), function(i, user) {
-            if (!user.vote) {
+            if (!user.vote()) {
                 ret = false;
             }
         });
@@ -27,6 +27,23 @@ var _vm = function() {
     this.userName = ko.observable();
     this.userId = ko.observable();
     this.roomName = ko.observable();
+
+    // convert .vote to observable
+    this.prepareUserData = function(users) {
+        function prepare(data) {
+            if (!data.vote || !ko.isObservable(data.vote)) {
+                data.vote = ko.observable(data.vote);
+            }
+        }
+        if (users instanceof Array) {
+            $.each(users, function(i, u) {
+                prepare(u);
+            });
+        } else {
+            prepare(users);
+        }
+        return users;
+    }
 
     this.init = function() {
         // @TODO: show loader
@@ -46,14 +63,18 @@ var _vm = function() {
             this.userId(data.id);
         }, this));
 
-        this.socket.on('error', $.proxy(function(data) {
+        this.socket.on('server_error', $.proxy(function(data) {
             alert('Server returned error: ' + data.msg);
         }));
+
+        this.socket.on('error', function(data) {
+            console.log('socket error:', data);
+        });
 
         this.socket.on('welcome', $.proxy(function(data) {
             console.log('welcome', data);
             this.roomName(data.roomName);
-            this.users(data.users);
+            this.users(this.prepareUserData(data.users));
         }, this));
 
         this.socket.on('joined', $.proxy(function(data) {
@@ -61,11 +82,8 @@ var _vm = function() {
             if (data.id == this.userId()) { 
                 return;
             }
-            var id = data.id,
-                name = data.name,
-                vote = data.vote;
 
-            this.users.push(data);
+            this.users.push(this.prepareUserData(data));
         }, this));
 
         this.socket.on('user_voted', $.proxy(function(data) {
@@ -73,7 +91,7 @@ var _vm = function() {
             this.users(
                 $.map(this.users(), function(u) {
                     if (u.id == data.id) {
-                        u.vote = data.vote;
+                        u.vote(data.vote);
                     } 
                     return u;
                 })

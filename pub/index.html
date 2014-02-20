@@ -24,8 +24,8 @@
             <div class="usersArea" data-bind="foreach: users">
                 <div class="userCard">
                     <div class="username" data-bind="text: name"></div>
-                    <div class="vote_loader" data-bind="visible: $data.vote && !$parent.allVoted()">voted</div>
-                    <div class="vote" data-bind="text: $data.vote ? $data.vote : '', css: {visible: $parent.allVoted}"></div>
+                    <div class="vote_loader" data-bind="visible: $data.vote() && !$parent.allVoted()">voted</div>
+                    <div class="vote" data-bind="text: $data.vote() , visible: $parent.allVoted()"></div>
                 </div>
             </div>
         </div>

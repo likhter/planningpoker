@@ -16,7 +16,7 @@ var io = socketio.listen(server);
 var socketDataFieldName = '_data';
 
 function sendError(socket, msg) {
-    socket.emit('error', {
+    socket.emit('server_error', {
         msg: msg 
     });
 }
@@ -68,7 +68,7 @@ function isVoteValid(vote) {
     return [0, 0.5, 1, 2, 3, 8, 13].indexOf(vote) != -1;
 }
 
-function userIsIn(socket, roomName) {
+function isUserIn(socket, roomName) {
     return io.sockets.clients(roomName).indexOf(socket) != -1;
 }
 
@@ -117,13 +117,16 @@ io.sockets.on('connection', function(socket) {
 
     ////////////////////////////////////////////////////////////
     socket.on('vote', function(data) {
-        // @TODO: check authorized
-        // @TODO: check room
+        if (!isAuthorized(socket)) {
+            return sendError(socket, 'Not authorized');
+        }
+
         if (!data) { return; }
+
         var roomName = data.roomName,
             vote = data.vote;
 
-        if (!userIsIn(socket, roomName)) {
+        if (!isUserIn(socket, roomName)) {
             return sendError(socket, 'You are not in this room');
         }
         if (!isVoteValid(vote)) {
@@ -138,7 +141,9 @@ io.sockets.on('connection', function(socket) {
     
     ////////////////////////////////////////////////////////////
     socket.on('disconnect', function() {
-        // @TODO: check authorized
+        if (!isAuthorized(socket)) {
+            return; // no reason to send error message here;
+        }
         // find all rooms where client was
         _.filter(Object.keys(io.sockets.manager.roomClients[socket.id]), function(val) {
             return val != '';
