@@ -24,6 +24,7 @@ var _vm = function() {
 
     this.userNameLoaderVisible = ko.observable(false);
     this.loginBoxVisible = ko.observable(true);
+    this.socketPreloaderVisible = ko.observable(true);
 
     this.onAfterLogin = function() {  };
     this.userId.subscribe(function() {
@@ -49,9 +50,8 @@ var _vm = function() {
 
     this.init = function() {
         // replace it with another loader?
-        this.userNameLoaderVisible(true);
         this.prepareSocket($.proxy(function() {
-            this.userNameLoaderVisible(false);
+            this.socketPreloaderVisible(false);
         }, this));
     };
 

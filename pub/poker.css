@@ -29,6 +29,12 @@ body {
     font-size: 24px;
 }
 
+.login .socketPreloader {
+    text-align: center;
+    height: 35px;
+    background: no-repeat no-repeat center 25px url(/img/loader.gif);
+}
+
 .login input.loading {
     background: no-repeat no-repeat 95% center url(/img/loader.gif);
 }

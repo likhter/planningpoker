@@ -13,10 +13,13 @@
     <body>
         <div class="login" data-bind="visible: loginBoxVisible">
             <div class="logo">Planning Poker</div>
-            <input type="text" placeholder="username" size="22" 
-                data-bind="value: userName, css: { loading: userNameLoaderVisible }, attr: { disabled: userNameLoaderVisible }"/><br/>
-            <button data-bind="click: onCreateRoomClick, attr: { disabled: userNameLoaderVisible }">create new room</button>
-            <button data-bind="click: onEnterClick, attr: { disabled: userNameLoaderVisible }">join existing</button>
+            <div class="socketPreloader" data-bind="visible: socketPreloaderVisible">Connecting to server...</div>
+            <div data-bind="visible: !socketPreloaderVisible()">
+                <input type="text" placeholder="username" size="22" 
+                    data-bind="value: userName, css: { loading: userNameLoaderVisible }, attr: { disabled: userNameLoaderVisible }"/><br/>
+                <button data-bind="click: onCreateRoomClick, attr: { disabled: userNameLoaderVisible }">create new room</button>
+                <button data-bind="click: onEnterClick, attr: { disabled: userNameLoaderVisible }">join existing</button>
+            </div>
         </div>
 
         <div class="poker" data-bind="visible: !loginBoxVisible()">
