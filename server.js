@@ -140,6 +140,21 @@ io.sockets.on('connection', function(socket) {
     });
     
     ////////////////////////////////////////////////////////////
+    
+    socket.on('reset', function(data) {
+        if (!isAuthorized(socket)) {
+            return sendError(socket, 'Not authorized');
+        }
+
+        if (!data) { return; }
+        var roomName = data.roomName;
+        if (!isUserIn(socket, roomName)) {
+            return sendError(socket, 'You are not in this room');
+        }
+        io.sockets.in(roomName).emit('reset', getData(socket, ['id']));
+    });
+
+    ////////////////////////////////////////////////////////////
     socket.on('disconnect', function() {
         if (!isAuthorized(socket)) {
             return; // no reason to send error message here;

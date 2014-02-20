@@ -97,14 +97,17 @@ var _vm = function() {
 
         this.socket.on('user_voted', $.proxy(function(data) {
             // catch voted user and set 'vote' field
-            this.users(
-                $.map(this.users(), function(u) {
-                    if (u.id == data.id) {
-                        u.vote(data.vote);
-                    } 
-                    return u;
-                })
-            );
+            $.each(this.users(), function(i, u) {
+                if (u.id == data.id) {
+                    u.vote(data.vote);
+                }
+            });
+        }, this));
+
+        this.socket.on('reset', $.proxy(function() {
+            $.each(this.users(), function(i, u) {
+                u.vote(undefined);
+            });
         }, this));
 
         this.socket.on('quit', $.proxy(function(data) {
@@ -124,6 +127,14 @@ var _vm = function() {
         }
         this.userNameLoaderVisible(true);
         this.socket.emit('set_name', { name: this.userName() });
+    }
+
+    this.resetRoom = function() {
+        this.socket.emit('reset', { roomName: this.roomName() }); 
+    }
+
+    this.showInviteDialog = function() {
+        alert('not implemented');
     }
 
 

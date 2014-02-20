@@ -21,7 +21,11 @@
 
         <div class="poker" data-bind="visible: !loginBoxVisible()">
             <div class="roomInfo">
-                Room <span class="roomName" data-bind="text: '#' + roomName()"></span>
+                <div class="btns">
+                    <button data-bind="click: resetRoom">reset</button>
+                    <button data-bind="click: showInviteDialog">invite</button>
+                </div>
+                <span class="userName" data-bind="text: userName()"></span>, room <span class="roomName" data-bind="text: '#' + roomName()"></span>
             </div>
             <div class="voteArea" data-bind="foreach: voteCardValues">
                 <div class="voteCard" data-bind="text: $data, click: $parent.onVoteCardClick"></div>

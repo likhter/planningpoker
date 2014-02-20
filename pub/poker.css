@@ -52,7 +52,26 @@ body {
 .roomInfo {
     text-align: right;
     padding: 10px;
-    font-size: 18px;
+    font-size: 24px;
+}
+
+.roomInfo .btns {
+    float: left;
+}
+
+.roomInfo .btns button {
+    border: solid 1px #1abc9c;
+    color: #1abc9c;
+    padding: 5px;
+    text-align: center;
+    -webkit-transition: background .5s;
+    background-color: white;
+    cursor: pointer;
+}
+
+.roomInfo .btns button:hover {
+    background-color: #ecf0f1;
+
 }
 
 .roomInfo .roomName {
