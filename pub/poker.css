@@ -4,14 +4,16 @@
 @import url(http://fonts.googleapis.com/css?family=Frijole&subset=latin,cyrillic);
 
 body {
-    padding-left: 100px;
-    max-width: 600px;
     font-family: 'Roboto Condensed', sans-serif;
 }
 
 /* login */
 .login {
     text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 600px;
+    padding-top: 200px;
 }
 
 .login .logo {
@@ -61,6 +63,9 @@ body {
 
 /* poker */
 .poker {
+    margin-left: auto;
+    margin-right: auto;
+    width: 600px;
 }
 
 /* roomInfo */

@@ -3,11 +3,8 @@ var _vm = function() {
 
     this.voteCardValues = [0, 0.5, 1, 2, 3, 8, 13];
 
-    // every user { id, name, vote } 
+    // every user { id, name, vote() } 
     this.users = ko.observableArray();
-    this.users.subscribe(function(newVal) {
-        console.log('users subscription, newVal=', newVal);
-    });
     this.allVoted = ko.computed(function() {
         if (this.users().length == 0) {
             return false;
@@ -24,6 +21,9 @@ var _vm = function() {
     this.userName = ko.observable();
     this.userId = ko.observable();
     this.roomName = ko.observable();
+
+    this.userNameLoaderVisible = ko.observable(false);
+    this.loginBoxVisible = ko.observable(true);
 
     this.userId.subscribe($.proxy(function(newVal) {
         if (newVal) {
@@ -52,9 +52,10 @@ var _vm = function() {
     }
 
     this.init = function() {
-        // @TODO: show loader
+        // replace it with another loader?
+        this.userNameLoaderVisible(true);
         this.prepareSocket($.proxy(function() {
-            // @TODO: hide loader 
+            this.userNameLoaderVisible(false);
         }, this));
     };
 
@@ -81,6 +82,8 @@ var _vm = function() {
             console.log('welcome', data);
             this.roomName(data.roomName);
             this.users(this.prepareUserData(data.users));
+            this.userNameLoaderVisible(false);
+            this.loginBoxVisible(false);
         }, this));
 
         this.socket.on('joined', $.proxy(function(data) {
@@ -119,6 +122,7 @@ var _vm = function() {
         if (!/^[a-z0-9-_]+$/i.test(this.userName())) {
             return alert('Username must be [a-z0-9-_\.]+'); 
         }
+        this.userNameLoaderVisible(true);
         this.socket.emit('set_name', { name: this.userName() });
     }
 
