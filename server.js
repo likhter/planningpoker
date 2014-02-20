@@ -151,6 +151,7 @@ io.sockets.on('connection', function(socket) {
         if (!isUserIn(socket, roomName)) {
             return sendError(socket, 'You are not in this room');
         }
+        setData(socket, { vote: undefined });
         io.sockets.in(roomName).emit('reset', getData(socket, ['id']));
     });
 
