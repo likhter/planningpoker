@@ -1,21 +1,130 @@
-/* vote area */
-.voteArea .voteCard {
-    display: inline-block;
-    padding: 10px;
+/* main font */
+@import url(http://fonts.googleapis.com/css?family=Roboto+Condensed&subset=latin,cyrillic);
+/* logo font */
+@import url(http://fonts.googleapis.com/css?family=Frijole&subset=latin,cyrillic);
+
+body {
+    padding-left: 100px;
+    max-width: 600px;
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+/* login */
+.login {
     text-align: center;
-    font-size: 18px;
-    font-weight: bold;
-    height: 20px;
-    background-color: gray;
+}
+
+.login .logo {
+    font-family: 'Frijole', cursive;
+    font-size: 40px;
+    text-align: center;
+}
+
+.login input {
+    text-align: center;
+    border: solid 1px #1abc9c;
+    padding: 5px 35px 5px 5px;
+    font-size: 24px;
+}
+
+.login input.loading {
+    background: no-repeat no-repeat 95% center url(/img/loader.gif);
+}
+
+.login button {
+    background-color: #1abc9c;
+    border: solid 1px #1abc9c;
+    border: none;
+    padding: 6px;
+    color: white;
     cursor: pointer;
+    font-size: 24px;
+    -webkit-transition: background .5s;
+}
+
+.login button:hover {
+    background-color: #2ecc71;
+}
+
+/* room info */
+.roomInfo {
+    text-align: right;
+    padding: 10px;
+    font-size: 18px;
+}
+
+.roomInfo .roomName {
+    color: #8e44ad;
+    font-size: 22px;
+}
+
+
+/* poker */
+.poker {
+}
+
+/* roomInfo */
+.roomInfo {
+}
+
+/* vote area */
+.voteArea {
+    text-align: center;
+    display: table;
+    border-collapse: separate;
+    border-spacing: 5px;
+}
+
+.voteArea .voteCard {
+    background-color: #ecf0f1;
+    font-family: 'Roboto Condensed';
+    display: table-cell;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    width: 80px;
+    height: 120px;
+    font-size: 40px;
+    font-weight: bold;
+    -webkit-transition: background .5s;
 }
 
 .voteArea .voteCard:hover {
-    background-color: pink;
+    background-color: #bdc3c7;
 }
 
-/* users area */
+
+/* userAreaa */
+.usersArea {
+    display: table;
+    border-collapse: separate;
+    border-spacing: 5px;
+}
+
 .usersArea .userCard {
-    background-color: #F1D1FF;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    width: 80px;
+    height: 120px;
+    -webkit-transition: background .5s;
+    background: no-repeat no-repeat 3px 5px url(/img/user.png) #3498db;
 }
 
+.usersArea .voted {
+    background: no-repeat no-repeat 3px 5px url(/img/user_voted.png) #3fc380;
+}
+
+.usersArea .userCard .username {
+    font-weight: bold;
+    color: #ecf0f1;
+    text-shadow: 2px 1px #7f8c8d;
+    text-align: center;
+    padding: 8px;
+}
+
+.usersArea .userCard .vote {
+    font-size: 24px;
+    color: white;
+    font-weight: bold;
+}

@@ -14,19 +14,25 @@ var _vm = function() {
         }
         var ret = true;
         $.each(this.users(), function(i, user) {
-            if (!user.vote()) {
+            if (user.vote() === undefined) {
                 ret = false;
             }
         });
         return ret;
     }, this);
-    this.allVoted.subscribe(function(newVal) {
-        console.log('allVoted subscription, newVal=', newVal);
-    });
 
     this.userName = ko.observable();
     this.userId = ko.observable();
     this.roomName = ko.observable();
+
+    this.userId.subscribe($.proxy(function(newVal) {
+        if (newVal) {
+            this.socket.emit(
+                'join', 
+                this.roomName() ? { roomName: this.roomName() } : {}
+            );
+        }
+    }, this));
 
     // convert .vote to observable
     this.prepareUserData = function(users) {
@@ -108,21 +114,25 @@ var _vm = function() {
         }, this));
     }
 
-    // dom elements listeners
-    this.onLoginClick = function() {
+    this.login = function() {
+        // @TODO: check this one!
         if (!/^[a-z0-9-_]+$/i.test(this.userName())) {
             return alert('Username must be [a-z0-9-_\.]+'); 
         }
         this.socket.emit('set_name', { name: this.userName() });
     }
 
+
+    // dom elements listeners
     this.onEnterClick = function() {
-        console.log('on enter click', this.roomName());
-        this.socket.emit('join', { roomName: this.roomName() });
+        this.roomName(prompt('Enter room name'));
+        this.login();
+        // see this.userId.subsribe to follow up next steps
     }
 
     this.onCreateRoomClick = function() {
-        this.socket.emit('join');
+        this.login();
+        // see this.userId.subsribe to follow up next steps
     }
 
     this.onVoteCardClick = function(vote) {
