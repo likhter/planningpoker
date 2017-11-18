@@ -1,9 +1,9 @@
 /* main font */
 @import url(http://fonts.googleapis.com/css?family=Roboto+Condensed&subset=latin,cyrillic);
 /* logo font */
-@import url(http://fonts.googleapis.com/css?family=Frijole&subset=latin,cyrillic);
+@import url('https://fonts.googleapis.com/css?family=Bungee+Inline');
 
-body {
+body, input, button {
     font-family: 'Roboto Condensed', sans-serif;
 }
 
@@ -17,8 +17,9 @@ body {
 }
 
 .login .logo {
-    font-family: 'Frijole', cursive;
-    font-size: 40px;
+    /* font-family: 'Roboto Condensed', sans-serif; */
+    font-family: 'Bungee Inline', cursive;
+    font-size: 80px;
     text-align: center;
 }
 
@@ -26,6 +27,7 @@ body {
     text-align: center;
     border: solid 1px #1abc9c;
     padding: 5px 35px 5px 5px;
+    margin: 5px;
     font-size: 24px;
 }
 
@@ -66,8 +68,9 @@ body {
 }
 
 .roomInfo .btns button {
-    border: solid 1px #1abc9c;
-    color: #1abc9c;
+    font-size: 18px;
+    border: solid 1px #ff2f99;
+    color: #ff2f99;
     padding: 5px;
     text-align: center;
     -webkit-transition: background .5s;
@@ -76,8 +79,8 @@ body {
 }
 
 .roomInfo .btns button:hover {
-    background-color: #ecf0f1;
-
+    background-color: #ff2f99;
+    color: white;
 }
 
 .roomInfo .roomName {
@@ -90,7 +93,7 @@ body {
 .poker {
     margin-left: auto;
     margin-right: auto;
-    width: 685px;
+    width: 850px;
 }
 
 /* roomInfo */
@@ -107,14 +110,13 @@ body {
 
 .voteArea .voteCard {
     background: no-repeat no-repeat 3px 5px url(/img/time.png) #ecf0f1;
-    font-family: 'Roboto Condensed';
     display: table-cell;
     cursor: pointer;
     text-align: center;
     vertical-align: middle;
-    width: 80px;
-    height: 120px;
-    font-size: 40px;
+    width: 100px;
+    height: 150px;
+    font-size: 50px;
     font-weight: bold;
     -webkit-transition: background .5s;
 }
@@ -135,8 +137,8 @@ body {
     display: table-cell;
     text-align: center;
     vertical-align: middle;
-    width: 80px;
-    height: 120px;
+    width: 100px;
+    height: 150px;
     -webkit-transition: background .5s;
     background: no-repeat no-repeat 3px 5px url(/img/user.png) #3498db;
 }
@@ -154,7 +156,7 @@ body {
 }
 
 .usersArea .userCard .vote {
-    font-size: 24px;
+    font-size: 40px;
     color: white;
     font-weight: bold;
 }

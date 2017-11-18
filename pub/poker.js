@@ -56,7 +56,7 @@ var _vm = function() {
     };
 
     this.prepareSocket = function(callback) {
-        this.socket = io.connect('http://tupi.ca:7654/');
+        this.socket = io.connect('http://pp.likhter.com:80/');
         this.socket.on('connect', function() {
             callback && callback();
         });
