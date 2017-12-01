@@ -3,6 +3,12 @@
 /* logo font */
 @import url('https://fonts.googleapis.com/css?family=Bungee+Inline');
 
+html {
+  background: urL(bg.jpg) no-repeat center center fixed;
+  background-size: cover;
+  -webkit-background-size: cover;
+}
+
 body, input, button {
     font-family: 'Roboto Condensed', sans-serif;
 }
