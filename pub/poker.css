@@ -138,6 +138,7 @@ body, input, button {
     text-align: center;
     vertical-align: middle;
     width: 100px;
+    max-width: 100px;
     height: 150px;
     -webkit-transition: background .5s;
     background: no-repeat no-repeat 3px 5px url(/img/user.png) #3498db;
@@ -153,6 +154,8 @@ body, input, button {
     text-shadow: 2px 1px #7f8c8d;
     text-align: center;
     padding: 8px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .usersArea .userCard .vote {
