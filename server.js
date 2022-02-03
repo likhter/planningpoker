@@ -65,7 +65,7 @@ function roomExists(roomName) {
 }
 
 function isVoteValid(vote) {
-    return [0, 0.5, 1, 2, 3, 5, 5, 5, 5, 5, 8, 13].indexOf(vote) != -1;
+    return [0, 0.5, 1, 1.5, 2, 3, 5, 5, 5, 5, 5, 8, 13].indexOf(vote) != -1;
 }
 
 function isUserIn(socket, roomName) {
