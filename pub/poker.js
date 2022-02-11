@@ -1,7 +1,7 @@
 var _vm = function() {
     this.socket = null;
 
-    this.voteCardValues = [0, 0.5, 1, 2, 3, 5, 8, 13];
+    this.voteCardValues = [0, 0.5, 1, 1.5, 2, 3, 5, 8, 13];
 
     // every user { id, name, vote() } 
     this.users = ko.observableArray();
