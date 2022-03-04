@@ -161,6 +161,10 @@ var _vm = function() {
         // see this.userId.subsribe to follow up next steps
     }
 
+    this.onClickRoomNumber = function() {
+        navigator.clipboard.writeText(vm.roomName());
+    }
+
     this.onVoteCardClick = function(vote) {
         vm.socket.emit('vote', { roomName: vm.roomName(), vote: vote });
     }
