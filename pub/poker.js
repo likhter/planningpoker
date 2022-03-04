@@ -56,7 +56,7 @@ var _vm = function() {
     };
 
     this.prepareSocket = function(callback) {
-        this.socket = io.connect('http://pp.likhter.com:80/');
+        this.socket = io.connect();
         this.socket.on('connect', function() {
             callback && callback();
         });
@@ -109,6 +109,7 @@ var _vm = function() {
 
         this.socket.on('quit', $.proxy(function(data) {
             // remove user from list
+            console.log('remove user', data);
             this.users(
                 $.map(this.users(), function(u) {
                     return u.id == data.id ? undefined : u;

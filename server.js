@@ -1,20 +1,21 @@
-var socketio = require('socket.io'),
-    static = require('node-static'),
-    http = require('http'),
-    _ = require('lodash');
+import { Server } from 'socket.io';
+import { Server as StaticServer } from 'node-static';
+import { createServer } from 'http';
 
-var file = new static.Server('./pub'),
-    server = http.createServer(function(req, res) {
+const PORT = process.env.PORT || 3000;
+
+const file = new StaticServer('./pub'),
+    server = createServer(function(req, res) {
         req.addListener('end', function() {
             file.serve(req, res);
         }).resume();
-    }).listen(7654);
+    }).listen(PORT, () => { console.log(`Listening on ${PORT}`)});
 
-var io = socketio.listen(server);
+const io = new Server(server);
 
-/////////////////////////////////////
-var socketDataFieldName = '_data';
+const socketDataFieldName = '_data';
 
+// @TODO pull utilities into separate file
 function sendError(socket, msg) {
     socket.emit('server_error', {
         msg: msg 
@@ -25,13 +26,13 @@ function setData(socket, data) {
     if (!socket[socketDataFieldName]) {
         socket[socketDataFieldName] = {};
     }
-    for (var key in data) {
+    for (const key in data) {
         socket[socketDataFieldName][key] = data[key];
     }
 }
 
 function getData(socket, fields) {
-    var ret = {};
+    const ret = {};
     if (typeof socket[socketDataFieldName] === 'undefined') {
         return undefined;
     }
@@ -57,11 +58,11 @@ function isAuthorized(socket) {
 }
 
 function roomExists(roomName) {
-    console.log('Rooms=', io.sockets.manager.rooms);
+    console.log('Available Rooms (incl private lobbies) =', io.sockets.adapter.rooms.keys());
     if (roomName == '') { 
         return false; // no access to empty room
     }
-    return ('/' + roomName) in io.sockets.manager.rooms;
+    return !!io.sockets.adapter.rooms.get(roomName);
 }
 
 function isVoteValid(vote) {
@@ -69,11 +70,11 @@ function isVoteValid(vote) {
 }
 
 function isUserIn(socket, roomName) {
-    return io.sockets.clients(roomName).indexOf(socket) != -1;
+    return Array.from(io.sockets.adapter.rooms.get(roomName).keys()).indexOf(socket.id) != -1;
 }
 
 io.sockets.on('connection', function(socket) {
-    console.log('connected', socket.id);
+    console.log(socket.id, ': CONNECT new socket');
     socket.on('set_name', function(data) {
         if (isAuthorized(socket)) {
             return sendError(socket, 'Already authorized');
@@ -86,16 +87,16 @@ io.sockets.on('connection', function(socket) {
         socket.emit('hello', { id: socket.id });
     });
 
-    ////////////////////////////////////////////////////////////
-    socket.on('join', function(data) {
-        console.log('JOIN', data);
+    socket.on('join', async function(data) {
+        console.log(socket.id, ': JOIN', data || 'new room');
         if (!isAuthorized(socket)) {
             return sendError(socket, 'Not authorized');
         }
 
-        var roomName;
+        let roomName;
         if ( data && (roomName = data.roomName) ) {
             if (!roomExists(roomName)) {
+                console.log(socket.id, ': JOIN failed, room', roomName, 'does not exist');
                 return sendError(socket, 'Room with such name does not exist');
             }
         } else {
@@ -105,17 +106,18 @@ io.sockets.on('connection', function(socket) {
         setData(socket, { vote: undefined });
         // @TODO: check if this user is already inside
 
-        socket.join(roomName);
+        await socket.join(roomName);
+
         socket.emit('welcome', {
             roomName: roomName,
-            users: _.map(io.sockets.clients(roomName), function(s) {
-                return getData(s, ['id', 'name', 'vote' ])
+            users: Array.from(io.sockets.adapter.rooms.get(roomName).keys()).map(function(s) {
+                // use the key to get the data from a specific socket (user)
+                return getData(io.sockets.sockets.get(s), ['id', 'name', 'vote' ]);
             })
         });
         io.sockets.in(roomName).emit('joined', getData(socket, ['id', 'name', 'vote']));
     });
 
-    ////////////////////////////////////////////////////////////
     socket.on('vote', function(data) {
         if (!isAuthorized(socket)) {
             return sendError(socket, 'Not authorized');
@@ -123,23 +125,22 @@ io.sockets.on('connection', function(socket) {
 
         if (!data) { return; }
 
-        var roomName = data.roomName,
+        const roomName = data.roomName,
             vote = data.vote;
 
         if (!isUserIn(socket, roomName)) {
             return sendError(socket, 'You are not in this room');
         }
+
         if (!isVoteValid(vote)) {
             return sendError(socket, 'Your vote is invalid');
         }
         setData(socket, {vote:vote});
 
-        var data2send = getData(socket, ['id']);
-        data2send.vote = vote;
-        io.sockets.in(roomName).emit('user_voted', data2send); 
+        const voteData = getData(socket, ['id']);
+        voteData.vote = vote;
+        io.sockets.in(roomName).emit('user_voted', voteData); 
     });
-    
-    ////////////////////////////////////////////////////////////
     
     socket.on('reset', function(data) {
         if (!isAuthorized(socket)) {
@@ -147,28 +148,26 @@ io.sockets.on('connection', function(socket) {
         }
 
         if (!data) { return; }
-        var roomName = data.roomName;
+        const roomName = data.roomName;
         if (!isUserIn(socket, roomName)) {
-            return sendError(socket, 'You are not in this room');
+            return sendError(socket, `You are not in room '${roomName}'`);
         }
         setData(socket, { vote: undefined });
         io.sockets.in(roomName).emit('reset', getData(socket, ['id']));
     });
 
-    ////////////////////////////////////////////////////////////
-    socket.on('disconnect', function() {
+    socket.on('disconnecting', function() {
         if (!isAuthorized(socket)) {
             return; // no reason to send error message here;
         }
-        // find all rooms where client was
-        _.filter(Object.keys(io.sockets.manager.roomClients[socket.id]), function(val) {
-            return val != '';
-        }).forEach(function(roomName) {
-            // every room begins with /
-            io.sockets.in(roomName.substr(1)).emit('quit', getData(socket, ['id']));
-        });
 
-
-        socket.emit('disconnect', getData(socket, 'id'));
+        io.sockets.adapter.rooms.forEach(function(value, key) {
+            // find all rooms where client was ... 
+            if (io.sockets.adapter.rooms.get(key).has(socket.id)) {
+                // ...& quit the room (emit to client to clean up the UI)
+                console.log(socket.id, ': DISCONNECT leaving from room', key);
+                io.sockets.in(key).emit('quit', getData(socket, ['id']));    
+            }
+        })
     });
 });
